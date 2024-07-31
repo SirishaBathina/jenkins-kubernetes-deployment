@@ -11,7 +11,7 @@ pipeline {
       }
     }
     stage('Build image') {
-      steps{
+      steps {
         script {
           dockerImage = docker.build dockerimagename
         }
@@ -19,40 +19,30 @@ pipeline {
     }
     stage('Pushing Image') {
       environment {
-          registryCredential = 'dockerhub_credentials'
-           }
-      steps{
+        registryCredential = 'dockerhub_credentials'
+      }
+      steps {
         script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+          docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
             dockerImage.push("latest")
           }
         }
       }
     }
     stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Save the Kubernetes configuration to a file
-                    writeFile file: 'kubeconfig', text: kubeconfig
-                    // Set KUBECONFIG environment variable to point to the saved file
-                    withEnv(["KUBECONFIG=${pwd()}/kubeconfig"]) {
-                        sh '''
-                            kubectl set image deployment=devopsbathinasirisha28/reactapp:latest
-                            kubectl rollout status deployment
-                        '''
-                    }
-                }
-            }
-        }
-   /*
-   stage('Deploying React.js container to Kubernetes') {
       steps {
         script {
-          kubernetesDeploy(configs: "deployment.yaml", services: "service.yaml")
-
+          // Save the Kubernetes configuration to a file
+          writeFile file: 'kubeconfig', text: kubeconfig
+          // Set KUBECONFIG environment variable to point to the saved file
+          withEnv(["KUBECONFIG=${pwd()}/kubeconfig"]) {
+            sh '''
+              kubectl set image deployment/reactapp reactapp=devopsbathinasirisha28/react-app:latest
+              kubectl rollout status deployment/reactapp
+            '''
+          }
         }
       }
     }
   }
-  */
 }
