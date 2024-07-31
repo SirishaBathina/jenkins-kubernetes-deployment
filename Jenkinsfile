@@ -29,18 +29,11 @@ pipeline {
         }
       }
     }
-    stage('Deploy to Kubernetes') {
+   stage('Deploying React.js container to Kubernetes') {
       steps {
         script {
-          // Save the Kubernetes configuration to a file
-          writeFile file: 'kubeconfig', text: kubeconfig
-          // Set KUBECONFIG environment variable to point to the saved file
-          withEnv(["KUBECONFIG=${pwd()}/kubeconfig"]) {
-            sh '''
-              kubectl set image deployment/reactapp reactapp=devopsbathinasirisha28/react-app:latest
-              kubectl rollout status deployment/reactapp
-            '''
-          }
+          kubernetesDeploy(configs: "deployment.yaml", 
+                                         "service.yaml")
         }
       }
     }
