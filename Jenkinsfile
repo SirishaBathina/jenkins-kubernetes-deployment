@@ -37,8 +37,8 @@ pipeline {
                     // Set KUBECONFIG environment variable to point to the saved file
                     withEnv(["KUBECONFIG=${pwd()}/kubeconfig"]) {
                         sh '''
-                            kubectl set image deployment/your-deployment-name your-container-name=your-dockerhub-username/your-image-name:latest
-                            kubectl rollout status deployment/your-deployment-name
+                            kubectl set image deployment=devopsbathinasirisha28/reactapp:latest
+                            kubectl rollout status deployment
                         '''
                     }
                 }
